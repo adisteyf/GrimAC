@@ -44,6 +44,7 @@ public class GrimVersion extends BaseCommand {
         MessageUtil.sendMessage(sender, Component.text()
                 .append(Component.text("Grim Version: ").color(NamedTextColor.GRAY))
                 .append(Component.text(current).color(NamedTextColor.AQUA))
+                .append(Component.text(" fork by Adisteyf (adk.)").color(NamedTextColor.GREEN))
                 .build());
         // use cached message if last check was less than 1 minute ago
         final long now = System.currentTimeMillis();
@@ -84,7 +85,7 @@ public class GrimVersion extends BaseCommand {
             Status status = compareVersions(current, latest);
             Component msg = switch (status) {
                 case AHEAD ->
-                        Component.text("You are using a development version of GrimAC").color(NamedTextColor.LIGHT_PURPLE);
+                        Component.text("You are using a development version (fork) of GrimAC").color(NamedTextColor.LIGHT_PURPLE);
                 case UPDATED ->
                         Component.text("You are using the latest version of GrimAC").color(NamedTextColor.GREEN);
                 case OUTDATED -> Component.text()

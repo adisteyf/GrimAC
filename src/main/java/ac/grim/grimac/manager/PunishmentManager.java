@@ -98,7 +98,7 @@ public class PunishmentManager implements ConfigReloadable {
     }
 
     private String replaceAlertPlaceholders(String original, int vl, PunishGroup group, Check check, String alertString, String verbose, Location location) {
-        String playerPos = "(" + location.getX() + " " + location.getY() + " " + location.getZ() + ")";
+        String playerPos = "(" + (int)location.getX() + " " + (int)location.getY() + " " + (int)location.getZ() + ")";
 
         original = original
                 .replace("[alert]", alertString)
