@@ -12,6 +12,7 @@ import ac.grim.grimac.utils.anticheat.LogUtil;
 import ac.grim.grimac.utils.anticheat.MessageUtil;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -96,7 +97,8 @@ public class PunishmentManager implements ConfigReloadable {
         }
     }
 
-    private String replaceAlertPlaceholders(String original, int vl, PunishGroup group, Check check, String alertString, String verbose) {
+    private String replaceAlertPlaceholders(String original, int vl, PunishGroup group, Check check, String alertString, String verbose, Location location) {
+        String playerPos = "(" + location.getX() + " " + location.getY() + " " + location.getZ() + ")";
 
         original = original
                 .replace("[alert]", alertString)
@@ -105,7 +107,8 @@ public class PunishmentManager implements ConfigReloadable {
                 .replace("%experimental%", check.isExperimental() ? experimentalSymbol : "")
                 .replace("%vl%", Integer.toString(vl))
                 .replace("%verbose%", verbose)
-                .replace("%description%", check.getDescription());
+                .replace("%description%", check.getDescription())
+                .replace("%coords%", playerPos);
 
         original = MessageUtil.replacePlaceholders(player, original);
 
@@ -121,7 +124,7 @@ public class PunishmentManager implements ConfigReloadable {
                 final int vl = getViolations(group, check);
                 final int violationCount = group.violations.size();
                 for (ParsedCommand command : group.commands) {
-                    String cmd = replaceAlertPlaceholders(command.command, vl, group, check, alertString, verbose);
+                    String cmd = replaceAlertPlaceholders(command.command, vl, group, check, alertString, verbose, player.bukkitPlayer.getLocation());
 
                     // Verbose that prints all flags
                     if (!GrimAPI.INSTANCE.getAlertManager().getEnabledVerbose().isEmpty() && command.command.equals("[alert]")) {
@@ -146,7 +149,7 @@ public class PunishmentManager implements ConfigReloadable {
                             if (command.command.equals("[webhook]")) {
                                 GrimAPI.INSTANCE.getDiscordManager().sendAlert(player, verbose, check.getDisplayName(), vl);
                             } else if (command.command.equals("[proxy]")) {
-                                ProxyAlertMessenger.sendPluginMessage(replaceAlertPlaceholders(command.command, vl, group, check, proxyAlertString, verbose));
+                                ProxyAlertMessenger.sendPluginMessage(replaceAlertPlaceholders(command.command, vl, group, check, proxyAlertString, verbose, player.bukkitPlayer.getLocation()));
                             } else {
                                 if (command.command.equals("[alert]")) {
                                     sentDebug = true;
