@@ -4,6 +4,31 @@ GrimAC is an open source Minecraft anticheat designed for 1.21 and supports 1.8-
 
 This project is considered feature complete for the 2.0 (open-source) branch of this project. If you would like a bugfix or enhancement and cannot sponsor the work, pull requests are welcome.
 
+## Adisteyf's features
+
+> [!WARNING]
+> To use plugin correctly you need to add
+> callback for `Alerts`. Just create a
+> `sender.py` script in server folder.
+
+### Example of sender.py
+
+```py
+import telebot
+import sys
+import re
+
+token='YOUR_TOKEN_KERE'
+bot=telebot.TeleBot(token)
+
+msg = sys.argv[1];
+msg_rem = re.sub(r'&.', '', msg)
+msg_rem = re.sub(r'§.', '', msg_rem)
+
+bot.send_message(CHAT_ID, "(grim) new alert avariable\n"+msg_rem);
+sys.exit(0);
+```
+
 ## Downloads
 - [Modrinth](https://modrinth.com/plugin/grimac)
 - [Hangar](https://hangar.papermc.io/GrimAnticheat/GrimAnticheat)

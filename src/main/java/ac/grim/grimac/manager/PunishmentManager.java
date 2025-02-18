@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.util.*;
 
 public class PunishmentManager implements ConfigReloadable {
@@ -25,6 +26,8 @@ public class PunishmentManager implements ConfigReloadable {
     private boolean testMode;
     private boolean printToConsole;
     private String proxyAlertString = "";
+
+    long lastExecutionTime = System.currentTimeMillis();
 
     public PunishmentManager(GrimPlayer player) {
         this.player = player;
@@ -112,6 +115,18 @@ public class PunishmentManager implements ConfigReloadable {
 
         original = MessageUtil.replacePlaceholders(player, original);
 
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastExecutionTime >= 2000) {
+            ProcessBuilder pb = new ProcessBuilder("python", "sender.py", original);
+            try {
+                Process p = pb.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            lastExecutionTime = currentTime;
+        }
+
         return original;
     }
 
@@ -154,7 +169,10 @@ public class PunishmentManager implements ConfigReloadable {
                                 if (command.command.equals("[alert]")) {
                                     sentDebug = true;
                                     if (testMode) { // secret test mode
+                                        //tgbot.set("msg", cmd);
+                                        //tgbot.exec("sendMsg(msg)");
                                         player.user.sendMessage(MessageUtil.miniMessage(cmd));
+
                                         continue;
                                     }
                                     cmd = "grim sendalert " + cmd; // Not test mode, we can add the command prefix
